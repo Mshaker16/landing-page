@@ -1,5 +1,10 @@
+
+import { ChakraProvider } from '@chakra-ui/react';
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import Navbar from './components/navbar';
+import ChakraClientWrapper from './components/chakra-client-wrapper'; 
+import HomePage from './page';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -19,10 +24,10 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <ChakraClientWrapper>
+          <HomePage />
+        </ChakraClientWrapper>
       </body>
     </html>
   );
