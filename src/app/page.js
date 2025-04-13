@@ -7,13 +7,15 @@ import {
 } from "react-icons/fa";
 import Navbar from "./components/navbar";
 import BookingBar from "./components/bookingbar";
+import TravelPage from "./components/travelpage";
+import FinalPage from "./components/finalpage";
 
 const HomePage = ({ isLoggedIn = false, username = "" }) => {
   return (
     <Box>
       <Navbar />
 
-      <Box w="100%" h="540px" position="relative" >
+      <Box w="100%" h="540px" position="relative">
         <Image
           src="/HeroBG.png"
           alt="Homepage Banner"
@@ -50,11 +52,17 @@ const HomePage = ({ isLoggedIn = false, username = "" }) => {
             Book 450+ Curated Egyptian Hotels
           </Text>
 
-<BookingBar />
+          <BookingBar />
         </Flex>
+      </Box>
+
+      <Box w="100%" bg="#121212">
+        <TravelPage />
+        <FinalPage/>
       </Box>
     </Box>
   );
 };
+
 
 export default HomePage;

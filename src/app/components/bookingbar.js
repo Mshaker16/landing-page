@@ -14,6 +14,8 @@ import {
   ChevronRightIcon,
   ChevronDownIcon,
 } from "@chakra-ui/icons";
+import { FaPlus, FaMinus } from "react-icons/fa";
+
 
 const LocationOption = ({ name, description, onSelect }) => (
   <Flex
@@ -49,29 +51,18 @@ const LocationOption = ({ name, description, onSelect }) => (
 );
 
 const Calendar = ({ month, year, selectedDates, onDateChange }) => {
-  // Calculate number of days in the month
   const daysInMonth = new Date(year, month + 1, 0).getDate();
-
-  // Get day of week for the first day (0 = Sunday, 6 = Saturday)
   const firstDayOfMonth = new Date(year, month, 1).getDay();
-
-  // Create padding for first week
   const padding = Array.from({ length: firstDayOfMonth }, (_, i) => null);
-
-  // Create array of days
   const days = Array.from({ length: daysInMonth }, (_, i) => i + 1);
-
-  // Get current date to disable past dates
   const currentDate = new Date();
   currentDate.setHours(0, 0, 0, 0);
 
-  // Helper to check if date is in the past
   const isDateInPast = (day) => {
     const checkDate = new Date(year, month, day);
     return checkDate < currentDate;
   };
 
-  // Helper to check if date is selected
   const isDateSelected = (day) => {
     if (!selectedDates.start || !selectedDates.end) {
       return false;
@@ -81,15 +72,12 @@ const Calendar = ({ month, year, selectedDates, onDateChange }) => {
     const startDate = new Date(selectedDates.start);
     const endDate = new Date(selectedDates.end);
 
-    // Set time to midnight for accurate comparison
     checkDate.setHours(0, 0, 0, 0);
     startDate.setHours(0, 0, 0, 0);
     endDate.setHours(0, 0, 0, 0);
 
     return checkDate >= startDate && checkDate <= endDate;
   };
-
-  // Helper to check if date is a boundary (start or end)
   const isDateBoundary = (day) => {
     if (!selectedDates.start || !selectedDates.end) {
       return false;
@@ -99,7 +87,6 @@ const Calendar = ({ month, year, selectedDates, onDateChange }) => {
     const startDate = new Date(selectedDates.start);
     const endDate = new Date(selectedDates.end);
 
-    // Set time to midnight for accurate comparison
     checkDate.setHours(0, 0, 0, 0);
     startDate.setHours(0, 0, 0, 0);
     endDate.setHours(0, 0, 0, 0);
@@ -236,7 +223,6 @@ const DatePicker = ({ selectedDates, onDateChange }) => {
     const currentYear = today.getFullYear();
 
     setCurrentDate((prev) => {
-      // Don't allow going earlier than current month
       if (
         (prev.year === currentYear && prev.month <= currentMonth) ||
         prev.year < currentYear
@@ -365,7 +351,7 @@ const GuestPicker = ({
         <Flex alignItems="center">
           <IconButton
             size="sm"
-            icon={<Text>-</Text>}
+            icon={<FaMinus color="#D2AC71" />}
             isRound
             onClick={() => onAdultsChange(Math.max(1, adults - 1))}
             isDisabled={adults <= 1}
@@ -377,7 +363,7 @@ const GuestPicker = ({
           </Text>
           <IconButton
             size="sm"
-            icon={<Text>+</Text>}
+            icon={<FaPlus color="#D2AC71" />}
             isRound
             onClick={() => onAdultsChange(adults + 1)}
             color="black"
@@ -398,7 +384,7 @@ const GuestPicker = ({
         <Flex alignItems="center">
           <IconButton
             size="sm"
-            icon={<Text>-</Text>}
+            icon={<FaMinus color="#D2AC71" />}
             isRound
             onClick={() => onChildrenChange(Math.max(0, children - 1))}
             isDisabled={children <= 0}
@@ -410,7 +396,7 @@ const GuestPicker = ({
           </Text>
           <IconButton
             size="sm"
-            icon={<Text>+</Text>}
+            icon={<FaPlus color="#D2AC71" />}
             isRound
             onClick={() => onChildrenChange(children + 1)}
             color="black"
@@ -428,7 +414,7 @@ const GuestPicker = ({
         <Flex alignItems="center">
           <IconButton
             size="sm"
-            icon={<Text>-</Text>}
+            icon={<FaMinus color="#D2AC71" />}
             isRound
             onClick={() => onRoomsChange(Math.max(1, rooms - 1))}
             isDisabled={rooms <= 1}
@@ -440,7 +426,7 @@ const GuestPicker = ({
           </Text>
           <IconButton
             size="sm"
-            icon={<Text>+</Text>}
+            icon={<FaPlus color="#D2AC71" />}
             isRound
             onClick={() => onRoomsChange(rooms + 1)}
             color="black"
@@ -449,8 +435,8 @@ const GuestPicker = ({
         </Flex>
       </Flex>
 
-      <Text fontSize="xs" color="gray.300" mt={2}>
-        You can search for up to 30 travelers
+      <Text fontSize="xs" color="#444444" mt={2}>
+        You can search for up to 16 travelers
       </Text>
     </Box>
   );
@@ -466,12 +452,10 @@ const Bookingbar = () => {
   const [children, setChildren] = useState(1);
   const [rooms, setRooms] = useState(1);
 
-  // Disclosure hooks for dropdowns
   const location = useDisclosure();
   const datePicker = useDisclosure();
   const guestPicker = useDisclosure();
 
-  // Close other dropdowns when one is opened
   const handleLocationClick = () => {
     if (datePicker.isOpen) datePicker.onClose();
     if (guestPicker.isOpen) guestPicker.onClose();
@@ -512,7 +496,6 @@ const Bookingbar = () => {
   return (
     <Box className="relative">
       <Box maxWidth="1120px" mx="auto">
-        {/* Main Search Bar */}
         <Box
           bg="rgba(68, 68, 68, 0.3)"
           p={4}
@@ -545,6 +528,8 @@ const Bookingbar = () => {
               <Text color="white">{selectedLocation}</Text>
             </Flex>
 
+            <Box height="32px" width="1px" bg="#444444" ml={7} />
+
             <Flex
               alignItems="center"
               cursor="pointer"
@@ -569,6 +554,8 @@ const Bookingbar = () => {
                 {formatDate(selectedDates.end)}
               </Text>
             </Flex>
+
+            <Box height="32px" width="1px" bg="#444444" ml={7} />
 
             <Flex
               alignItems="center"
@@ -599,15 +586,15 @@ const Bookingbar = () => {
               color="white"
               size="md"
               _hover={{ bg: "#2a5942" }}
+              ml={7}
+              rounded={"full"}
             >
               Explore Stays
             </Button>
           </Flex>
         </Box>
 
-        {/* Dropdown Containers */}
         <Stack spacing={4} align="flex-start">
-          {/* Location Dropdown */}
           {location.isOpen && (
             <Box
               position="absolute"
@@ -634,8 +621,6 @@ const Bookingbar = () => {
               </Box>
             </Box>
           )}
-
-          {/* Date Picker Dropdown */}
           {datePicker.isOpen && (
             <Box
               position="absolute"
@@ -653,12 +638,10 @@ const Bookingbar = () => {
               />
             </Box>
           )}
-
-          {/* Guest Picker Dropdown */}
           {guestPicker.isOpen && (
             <Box
               position="absolute"
-              left={"80%"}
+              left={"50%"}
               mr="20px"
               width="300px"
               bg="#444444"

@@ -23,10 +23,10 @@ import { SearchIcon } from "@chakra-ui/icons"; // Chakra UI search icon
 import {
   FaGlobe,
   FaLocationArrow,
-  FaHeart,
-  FaShoppingCart,
+  FaRegHeart,
   FaUserCircle,
 } from "react-icons/fa";
+import { LuShoppingCart } from "react-icons/lu";
 import { useState } from "react";
 import { AiOutlineRight } from "react-icons/ai";
 
@@ -97,11 +97,7 @@ const Navbar = () => {
           onClick={() => setIsSearching(false)}
         />
       )}
-      <Box
-        position="relative"
-        top="5px"
-        left={"auto"}
-      >
+      <Box position="relative" top="5px" left={"auto"}>
         <img
           src="/Group 210.png"
           alt="Company Logo"
@@ -121,7 +117,7 @@ const Navbar = () => {
           aria-label="Search"
           icon={<SearchIcon />}
           color="#D2AC71"
-          bg="#333333"
+          bg="#444444"
           borderRadius="full"
           fontSize="24px"
           m={2}
@@ -144,7 +140,7 @@ const Navbar = () => {
               value={searchQuery}
               onChange={handleSearchInput}
               onFocus={() => setSearchQuery("")}
-              bg="gray.700"
+              bg="#444444"
               color="white"
               borderRadius="full"
               size="md"
@@ -158,8 +154,8 @@ const Navbar = () => {
               <VStack
                 align="flex-start"
                 spacing={2}
-                bg="gray.700"
-                borderRadius="md"
+                bg="#444444"
+                borderRadius="3xl"
                 boxShadow="md"
                 p={3}
                 width="350px"
@@ -370,59 +366,68 @@ const Navbar = () => {
       </Menu>
 
       {isLoggedIn ? (
-        <Flex align="center" gap={4}>
+        <Flex align="center" gap={2}>
           <Divider
             orientation="vertical"
             height="25px"
             borderColor="gray.500"
           />
-
           <IconButton
-            aria-label="Favorites"
-            icon={<FaHeart />}
+            aria-label="whishlist"
+            icon={<FaRegHeart />}
             colorScheme="whiteAlpha"
-            variant="ghost"
+            rounded="full"
             fontSize="20px"
+            bg={"transparent"}
           />
 
           <IconButton
             aria-label="Cart"
-            icon={<FaShoppingCart />}
+            icon={<LuShoppingCart />}
             colorScheme="whiteAlpha"
-            variant="ghost"
+            rounded="full"
             fontSize="20px"
+            bg={"transparent"}
           />
-
           <Menu>
             <MenuButton
               as={IconButton}
               aria-label="Profile Menu"
               icon={<FaUserCircle />}
-              colorScheme="whiteAlpha"
-              variant="ghost"
-              fontSize="22px"
+              colorScheme="#F6EEE5"
+              color={"#F6EEE5"}
+              rounded="full"
+              fontSize="36px"
+              bg={"transparent"}
             />
-            <MenuList bg="#333333" color="white" fontFamily="Montserrat">
-              <MenuItem
-                _hover={{ bg: "gray.600" }}
-                color="#D2AC71"
-                fontWeight="bold"
-              >
+            <MenuList
+              bg="#F6EEE5"
+              color="white"
+              fontFamily="Montserrat"
+              borderRadius="md"
+              borderColor="#444444"
+              rounded="2xl"
+              p={2}
+              minW="160px"
+              w="auto"
+            >
+              <MenuItem _hover={{ bg: "white" }} color="#D2AC71" bg="#F6EEE5">
                 My Profile
               </MenuItem>
-              <MenuItem _hover={{ bg: "gray.600" }} color="white">
+              <MenuItem _hover={{ bg: "white" }} color="black" bg="#F6EEE5">
                 Saved Bundles
               </MenuItem>
-              <MenuItem _hover={{ bg: "gray.600" }} color="white">
+              <MenuItem _hover={{ bg: "white" }} color="black" bg="#F6EEE5">
                 Invite Friends
               </MenuItem>
-              <MenuItem _hover={{ bg: "gray.600" }} color="white">
+              <MenuItem _hover={{ bg: "white" }} color="black" bg="#F6EEE5">
                 Settings
               </MenuItem>
               <MenuItem
-                _hover={{ bg: "gray.600" }}
+                _hover={{ bg: "white" }}
                 color="red.400"
                 onClick={() => setIsLoggedIn(false)}
+                bg="#F6EEE5"
               >
                 Log Out
               </MenuItem>
@@ -438,6 +443,7 @@ const Navbar = () => {
             py={2}
             borderRadius="full"
             mr={2}
+            onClick={() => setIsLoggedIn(true)}
           >
             Login
           </Button>
