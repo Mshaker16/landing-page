@@ -14,12 +14,11 @@ import {
   HStack,
   Icon,
   Input,
-  InputGroup,
-  InputRightElement,
   Divider,
   useDisclosure,
+  useBreakpointValue,
 } from "@chakra-ui/react";
-import { SearchIcon } from "@chakra-ui/icons"; // Chakra UI search icon
+import { SearchIcon, ChevronDownIcon } from "@chakra-ui/icons";
 import {
   FaGlobe,
   FaLocationArrow,
@@ -32,13 +31,10 @@ import { AiOutlineRight } from "react-icons/ai";
 
 const Navbar = () => {
   const [selectedLanguage, setSelectedLanguage] = useState("EN");
-  const handleLanguageChange = (languageCode) => {
-    setSelectedLanguage(languageCode);
-  };
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearching, setIsSearching] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [popularResults, setPopularResults] = useState([
+  const [popularResults] = useState([
     "Cairo",
     "Alexandria",
     "Hurghada",
@@ -48,23 +44,19 @@ const Navbar = () => {
   const [filteredResults, setFilteredResults] = useState([]);
   const [selectedResult, setSelectedResult] = useState(null);
 
+  const isMobile = useBreakpointValue({ base: true, md: false });
+  const showFullNav = useBreakpointValue({ base: false, lg: true });
+
   const handleSearchInput = (e) => {
     const query = e.target.value;
     setSearchQuery(query);
-    if (query.length > 0) {
-      setFilteredResults(
-        popularResults.filter((result) =>
-          result.toLowerCase().includes(query.toLowerCase())
-        )
-      );
-    } else {
-      setFilteredResults([]);
-    }
-  };
-
-  const handleSearchSubmit = () => {
-    setIsSearching(true);
-    setFilteredResults([searchQuery]);
+    setFilteredResults(
+      query.length > 0
+        ? popularResults.filter((result) =>
+            result.toLowerCase().includes(query.toLowerCase())
+          )
+        : []
+    );
   };
 
   const handleResultClick = (result) => {
@@ -78,12 +70,15 @@ const Navbar = () => {
     <Flex
       as="nav"
       w="full"
-      h="100px"
+      minH="80px"
       bg="black"
       align="center"
       justify="space-between"
-      px={{ base: 4, md: 12 }}
-      py={4}
+      px={{ base: 3, sm: 4, md: 6, lg: 12 }}
+      py={3}
+      position="relative"
+      flexWrap="wrap"
+      gap={2}
     >
       {isSearching && (
         <Box
@@ -97,361 +92,359 @@ const Navbar = () => {
           onClick={() => setIsSearching(false)}
         />
       )}
-      <Box position="relative" top="5px" left={"auto"}>
+
+      <Box flexShrink={0} order={{ base: 1, md: 1 }} mr={{ base: 2, md: 4 }}>
         <img
           src="/Group 210.png"
           alt="Company Logo"
-          width="100px"
-          height="58px"
+          style={{
+            width: isMobile ? "80px" : "100px",
+            height: "auto",
+            aspectRatio: "100/58",
+          }}
         />
       </Box>
 
       <Box
-        display="flex"
-        alignItems="center"
+        order={{ base: 3, md: 2 }}
+        width={{ base: "100%", md: "auto" }}
+        mt={{ base: isSearching ? 2 : 0, md: 0 }}
         position="relative"
         zIndex="1000"
         onClick={(e) => e.stopPropagation()}
       >
-        <IconButton
-          aria-label="Search"
-          icon={<SearchIcon />}
-          color="#D2AC71"
-          bg="#444444"
-          borderRadius="full"
-          fontSize="24px"
-          m={2}
-          _hover={{ bg: "gray.700" }}
-          onClick={() => setIsSearching(!isSearching)} // Toggle search visibility
-          position={"relative"}
-        />
+        <Flex position="relative" align="center">
+          <IconButton
+            aria-label="Search"
+            icon={<SearchIcon />}
+            color="#D2AC71"
+            bg="#444444"
+            borderRadius="full"
+            fontSize={{ base: "20px", md: "24px" }}
+            m={{ base: 1, md: 2 }}
+            _hover={{ bg: "gray.700" }}
+            onClick={() => setIsSearching(!isSearching)}
+            position={isMobile ? "absolute" : "static"}
+            left={isMobile ? "10px" : "auto"}
+            top={isMobile ? "50%" : "auto"}
+            transform={isMobile ? "translateY(-50%)" : "none"}
+            zIndex="1001"
+          />
 
-        {isSearching && (
-          <Box
-            width="auto"
-            zIndex={1000}
-            display="flex"
-            alignItems="center"
-            flexDirection="column"
-            position={"relative"}
-          >
-            <Input
-              placeholder="Search"
-              value={searchQuery}
-              onChange={handleSearchInput}
-              onFocus={() => setSearchQuery("")}
-              bg="#444444"
-              color="white"
-              borderRadius="full"
-              size="md"
-              mb={2}
-              autoFocus
-              transition="width 0.3s ease"
-              width="350px"
-            />
-
-            {searchQuery === "" && (
-              <VStack
-                align="flex-start"
-                spacing={2}
+          {isSearching && (
+            <Box
+              width={{ base: "100%", md: "350px" }}
+              ml={{ base: 0, md: "50px" }}
+              position="absolute"
+            >
+              <Input
+                placeholder="Search"
+                value={searchQuery}
+                onChange={handleSearchInput}
+                onFocus={() => setSearchQuery("")}
                 bg="#444444"
-                borderRadius="3xl"
-                boxShadow="md"
-                p={3}
-                width="350px"
-                maxHeight="400px"
-                position={"absolute"}
-                mt={10}
-              >
-                <Text color="#D2AC71" fontSize="lg" fontWeight="bold">
-                  Most Popular
-                </Text>
-                {popularResults.length > 0 ? (
-                  popularResults.map((result, index) => (
-                    <HStack
-                      key={index}
-                      spacing={3}
-                      align="center"
-                      _hover={{ bg: "gray.600", cursor: "pointer" }}
-                      onClick={() => handleResultClick(result)}
-                      width="100%"
-                    >
-                      <Icon as={FaLocationArrow} color="white" />
-                      <Box>
-                        <Text color="white">{result}</Text>
-                        <Text color="gray.400" fontSize="sm">
-                          City in Egypt
-                        </Text>
-                      </Box>
-                    </HStack>
-                  ))
-                ) : (
-                  <Text color="white">No popular results</Text>
-                )}
+                color="white"
+                borderRadius="full"
+                size="md"
+                pl={isMobile ? "40px" : "20px"}
+                width="100%"
+                autoFocus
+              />
 
-                <Divider borderColor="gray.500" my={2} />
-                <HStack spacing={10} align="center" width="100%">
-                  <Text color="grey">See all results for: {searchQuery}</Text>
-                  <Link
-                    href="#"
-                    color="white"
-                    _hover={{ color: "#D2AC71" }}
-                    ml="auto"
-                  >
-                    <AiOutlineRight />
-                  </Link>
-                </HStack>
-              </VStack>
-            )}
-
-            {searchQuery && ( // Show filtered results when searchQuery is not empty
-              <VStack
-                align="flex-start"
-                spacing={2}
-                bg="gray.700"
-                borderRadius="md"
-                boxShadow="md"
-                p={3}
-                width="350px"
-                maxHeight="200px"
-                overflowY="auto"
-                position={"absolute"}
-                mt={10}
-              >
-                <Text color="#D2AC71" fontSize="lg" fontWeight="bold">
-                  Locations
-                </Text>
-
-                {filteredResults.length > 0 ? (
-                  filteredResults.map((result, index) => (
-                    <HStack
-                      key={index}
-                      spacing={3}
-                      align="center"
-                      _hover={{ bg: "gray.600", cursor: "pointer" }}
-                      onClick={() => handleResultClick(result)}
-                      width="100%"
-                    >
-                      <Icon as={FaLocationArrow} color="white" />
-                      <Box>
-                        <Text color="white">{result}</Text>
-                        <Text color="gray.400" fontSize="sm">
-                          City in Egypt
-                        </Text>
-                      </Box>
-                    </HStack>
-                  ))
-                ) : searchQuery && !selectedResult ? (
-                  <Text color="white">No results found</Text>
-                ) : null}
-
-                {filteredResults.length === 0 &&
-                  searchQuery &&
-                  !selectedResult && (
-                    <Text
-                      color="#D2AC71"
-                      onClick={handleSearchSubmit}
-                      _hover={{ color: "#D2AC71", cursor: "pointer" }}
-                    >
-                      Most Popular : {popularResults.join(", ")}
-                    </Text>
+              {(searchQuery === "" || filteredResults.length > 0) && (
+                <Box
+                  width="100%"
+                  maxWidth="350px"
+                  maxHeight={{ base: "60vh", md: "400px" }}
+                  overflowY="auto"
+                  position="absolute"
+                  top="calc(100% + 5px)"
+                  left={0}
+                  bg="#444444"
+                  borderRadius={{ base: "none", md: "3xl" }}
+                  boxShadow="md"
+                  p={3}
+                  zIndex="1000"
+                >
+                  {searchQuery === "" ? (
+                    <>
+                      <Text color="#D2AC71" fontSize="lg" fontWeight="bold">
+                        Most Popular
+                      </Text>
+                      {popularResults.map((result, index) => (
+                        <HStack
+                          key={index}
+                          spacing={3}
+                          align="center"
+                          p={2}
+                          _hover={{ bg: "gray.600", cursor: "pointer" }}
+                          onClick={() => handleResultClick(result)}
+                        >
+                          <Icon as={FaLocationArrow} color="white" />
+                          <Box>
+                            <Text color="white">{result}</Text>
+                            <Text color="gray.400" fontSize="sm">
+                              City in Egypt
+                            </Text>
+                          </Box>
+                        </HStack>
+                      ))}
+                    </>
+                  ) : (
+                    <>
+                      <Text color="#D2AC71" fontSize="lg" fontWeight="bold">
+                        Locations
+                      </Text>
+                      {filteredResults.map((result, index) => (
+                        <HStack
+                          key={index}
+                          spacing={3}
+                          align="center"
+                          p={2}
+                          _hover={{ bg: "gray.600", cursor: "pointer" }}
+                          onClick={() => handleResultClick(result)}
+                        >
+                          <Icon as={FaLocationArrow} color="white" />
+                          <Box>
+                            <Text color="white">{result}</Text>
+                            <Text color="gray.400" fontSize="sm">
+                              City in Egypt
+                            </Text>
+                          </Box>
+                        </HStack>
+                      ))}
+                    </>
                   )}
-
-                <Divider borderColor="gray.500" my={2} />
-
-                <HStack spacing={2} align="center" width="100%">
-                  <Text color="grey">See all results for: {searchQuery}</Text>
-                  <Link
-                    href="#"
-                    color="white"
-                    _hover={{ color: "#D2AC71" }}
-                    ml="auto"
-                  >
-                    <AiOutlineRight />
-                  </Link>
-                </HStack>
-              </VStack>
-            )}
-          </Box>
-        )}
+                </Box>
+              )}
+            </Box>
+          )}
+        </Flex>
       </Box>
 
-      <Flex align="center" gap={20} wrap="wrap">
-        <Button variant="link">
-          <Text
-            as="span"
-            color="#D2AC71"
-            fontWeight="600"
-            fontFamily="Montserrat"
-          >
-            GOE
-          </Text>
-        </Button>
-        <Button variant="link">
-          <Text
-            as="span"
-            color="#D2AC71"
-            fontWeight="bold"
-            fontFamily="Montserrat"
-          >
-            Egy
-          </Text>
-          <Text as="span" color="white">
-            Book
-          </Text>
-        </Button>
-        <Button variant="link">
-          <Text
-            as="span"
-            color="#D2AC71"
-            fontWeight="bold"
-            fontFamily="Montserrat"
-          >
-            Egy
-          </Text>
-          <Text as="span" color="white">
-            Explore
-          </Text>
-        </Button>
-        <Button variant="link">
-          <Text
-            as="span"
-            color="#D2AC71"
-            fontWeight="bold"
-            fontFamily="Montserrat"
-          >
-            Egy
-          </Text>
-          <Text as="span" color="white">
-            Tales
-          </Text>
-        </Button>
-        <Button variant="link">
-          <Text
-            as="span"
-            color="#D2AC71"
-            fontWeight="bold"
-            fontFamily="Montserrat"
-          >
-            Egy
-          </Text>
-          <Text as="span" color="white">
-            Treasure
-          </Text>
-        </Button>
-      </Flex>
-
-      <Menu>
-        <MenuButton
-          as={Button}
-          variant="link"
-          color="white"
-          fontFamily="Montserrat"
-          leftIcon={<FaGlobe />}
-          rightIcon={<span>{selectedLanguage}</span>}
-        ></MenuButton>
-        <MenuList bg="#333333" color="black" fontFamily="Montserrat">
-          <MenuItem onClick={() => handleLanguageChange("EN")}>
-            English
-          </MenuItem>
-          <MenuItem onClick={() => handleLanguageChange("ES")}>
-            Spanish
-          </MenuItem>
-          <MenuItem onClick={() => handleLanguageChange("FR")}>French</MenuItem>
-          <MenuItem onClick={() => handleLanguageChange("DE")}>German</MenuItem>
-          <MenuItem onClick={() => handleLanguageChange("IT")}>
-            Italian
-          </MenuItem>
-        </MenuList>
-      </Menu>
-
-      {isLoggedIn ? (
-        <Flex align="center" gap={2}>
-          <Divider
-            orientation="vertical"
-            height="25px"
-            borderColor="gray.500"
-          />
-          <IconButton
-            aria-label="whishlist"
-            icon={<FaRegHeart />}
-            colorScheme="whiteAlpha"
-            rounded="full"
-            fontSize="20px"
-            bg={"transparent"}
-          />
-
-          <IconButton
-            aria-label="Cart"
-            icon={<LuShoppingCart />}
-            colorScheme="whiteAlpha"
-            rounded="full"
-            fontSize="20px"
-            bg={"transparent"}
-          />
-          <Menu>
-            <MenuButton
-              as={IconButton}
-              aria-label="Profile Menu"
-              icon={<FaUserCircle />}
-              colorScheme="#F6EEE5"
-              color={"#F6EEE5"}
-              rounded="full"
-              fontSize="36px"
-              bg={"transparent"}
-            />
-            <MenuList
-              bg="#F6EEE5"
-              color="white"
-              fontFamily="Montserrat"
-              borderRadius="md"
-              borderColor="#444444"
-              rounded="2xl"
-              p={2}
-              minW="160px"
-              w="auto"
-            >
-              <MenuItem _hover={{ bg: "white" }} color="#D2AC71" bg="#F6EEE5">
-                My Profile
-              </MenuItem>
-              <MenuItem _hover={{ bg: "white" }} color="black" bg="#F6EEE5">
-                Saved Bundles
-              </MenuItem>
-              <MenuItem _hover={{ bg: "white" }} color="black" bg="#F6EEE5">
-                Invite Friends
-              </MenuItem>
-              <MenuItem _hover={{ bg: "white" }} color="black" bg="#F6EEE5">
-                Settings
-              </MenuItem>
-              <MenuItem
-                _hover={{ bg: "white" }}
-                color="red.400"
-                onClick={() => setIsLoggedIn(false)}
-                bg="#F6EEE5"
+      {showFullNav ? (
+        <Flex
+          align="center"
+          gap={{ base: 2, md: 6, lg: 12 }}
+          order={{ base: 2, md: 3 }}
+          mx="auto"
+          flexShrink={0}
+        >
+          {["GOE", "EgyBook", "EgyExplore", "EgyTales", "EgyTreasure"].map(
+            (item) => (
+              <Button
+                key={item}
+                variant="link"
+                whiteSpace="nowrap"
+                minW="max-content"
+                px={{ base: 1, md: 2 }}
               >
-                Log Out
-              </MenuItem>
-            </MenuList>
-          </Menu>
+                {item.startsWith("Egy") ? (
+                  <>
+                    <Text
+                      as="span"
+                      color="#D2AC71"
+                      fontWeight="bold"
+                      fontFamily="Montserrat"
+                    >
+                      {item.substring(0, 3)}
+                    </Text>
+                    <Text as="span" color="white">
+                      {item.substring(3)}
+                    </Text>
+                  </>
+                ) : (
+                  <Text
+                    as="span"
+                    color="#D2AC71"
+                    fontWeight="600"
+                    fontFamily="Montserrat"
+                  >
+                    {item}
+                  </Text>
+                )}
+              </Button>
+            )
+          )}
         </Flex>
       ) : (
-        <Flex gap={4}>
-          <Button
-            bg="#D2AC71"
-            color="white"
-            px={6}
-            py={2}
-            borderRadius="full"
-            mr={2}
-            onClick={() => setIsLoggedIn(true)}
+        <Menu>
+          <MenuButton
+            as={Button}
+            variant="ghost"
+            color="#D2AC71"
+            order={{ base: 2, md: 3 }}
           >
-            Login
-          </Button>
-          <Button bg="#D2AC71" color="white" px={7} py={2} borderRadius="full">
-            Sign Up
-          </Button>
-        </Flex>
+            Menu
+          </MenuButton>
+          <MenuList bg="#444444" color="white">
+            {["GOE", "EgyBook", "EgyExplore", "EgyTales", "EgyTreasure"].map(
+              (item) => (
+                <MenuItem key={item} bg="#444444" _hover={{ bg: "gray.600" }}>
+                  {item.startsWith("Egy") ? (
+                    <>
+                      <Text
+                        as="span"
+                        color="#D2AC71"
+                        fontWeight="bold"
+                        fontFamily="Montserrat"
+                      >
+                        {item.substring(0, 3)}
+                      </Text>
+                      <Text as="span" color="white">
+                        {item.substring(3)}
+                      </Text>
+                    </>
+                  ) : (
+                    <Text
+                      as="span"
+                      color="#D2AC71"
+                      fontWeight="600"
+                      fontFamily="Montserrat"
+                    >
+                      {item}
+                    </Text>
+                  )}
+                </MenuItem>
+              )
+            )}
+          </MenuList>
+        </Menu>
       )}
+
+      <Flex
+        align="center"
+        gap={{ base: 2, md: 4 }}
+        order={{ base: 4, md: 4 }}
+        ml={{ base: "auto", md: 0 }}
+        flexShrink={0}
+      >
+        <Menu>
+          <MenuButton
+            as={Button}
+            variant="link"
+            color="white"
+            fontFamily="Montserrat"
+            leftIcon={<FaGlobe />}
+            rightIcon={<ChevronDownIcon />}
+            minW="max-content"
+          >
+            {!isMobile && <Text>{selectedLanguage}</Text>}
+          </MenuButton>
+          <MenuList
+            bg="#444444"
+            color="white"
+            fontFamily="Montserrat"
+            rounded="2xl"
+          >
+            {["EN", "ES", "FR", "DE", "IT"].map((lang) => (
+              <MenuItem
+                key={lang}
+                onClick={() => setSelectedLanguage(lang)}
+                bg="#444444"
+                _hover={{ bg: "gray.600" }}
+              >
+                {lang}
+              </MenuItem>
+            ))}
+          </MenuList>
+        </Menu>
+
+        {/* User Section */}
+        {isLoggedIn ? (
+          <Flex align="center" gap={{ base: 1, md: 2 }}>
+            {!isMobile && (
+              <Divider
+                orientation="vertical"
+                height="25px"
+                borderColor="gray.500"
+              />
+            )}
+            <IconButton
+              aria-label="Wishlist"
+              icon={<FaRegHeart />}
+              variant="ghost"
+              color="white"
+              fontSize={{ base: "18px", md: "20px" }}
+              _hover={{ bg: "rgba(255,255,255,0.1)" }}
+            />
+            <IconButton
+              aria-label="Cart"
+              icon={<LuShoppingCart />}
+              variant="ghost"
+              color="white"
+              fontSize={{ base: "18px", md: "20px" }}
+              _hover={{ bg: "rgba(255,255,255,0.1)" }}
+            />
+            <Menu>
+              <MenuButton
+                as={IconButton}
+                aria-label="Profile Menu"
+                icon={<FaUserCircle />}
+                variant="ghost"
+                color="#F6EEE5"
+                fontSize={{ base: "28px", md: "36px" }}
+                _hover={{ bg: "rgba(255,255,255,0.1)" }}
+              />
+              <MenuList
+                bg="#F6EEE5"
+                color="black"
+                fontFamily="Montserrat"
+                rounded="2xl"
+                p={2}
+                minW="160px"
+              >
+                <MenuItem _hover={{ bg: "white" }} color="#D2AC71" bg="#F6EEE5">
+                  My Profile
+                </MenuItem>
+                <MenuItem _hover={{ bg: "white" }} bg="#F6EEE5">
+                  Saved Bundles
+                </MenuItem>
+                <MenuItem _hover={{ bg: "white" }} bg="#F6EEE5">
+                  Invite Friends
+                </MenuItem>
+                <MenuItem _hover={{ bg: "white" }} bg="#F6EEE5">
+                  Settings
+                </MenuItem>
+                <MenuItem
+                  _hover={{ bg: "white" }}
+                  color="red.400"
+                  onClick={() => setIsLoggedIn(false)}
+                  bg="#F6EEE5"
+                >
+                  Log Out
+                </MenuItem>
+              </MenuList>
+            </Menu>
+          </Flex>
+        ) : (
+          <Flex gap={{ base: 2, md: 4 }}>
+            <Button
+              bg="#D2AC71"
+              color="white"
+              px={{ base: 4, md: 6 }}
+              py={2}
+              borderRadius="full"
+              _hover={{ bg: "#c19a60" }}
+              onClick={() => setIsLoggedIn(true)}
+              size={{ base: "sm", md: "md" }}
+            >
+              Login
+            </Button>
+            <Button
+              bg="#D2AC71"
+              color="white"
+              px={{ base: 4, md: 7 }}
+              py={2}
+              borderRadius="full"
+              _hover={{ bg: "#c19a60" }}
+              size={{ base: "sm", md: "md" }}
+            >
+              Sign Up
+            </Button>
+          </Flex>
+        )}
+      </Flex>
     </Flex>
   );
 };

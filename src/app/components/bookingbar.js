@@ -8,6 +8,7 @@ import {
   useDisclosure,
   Collapse,
   Stack,
+  useMediaQuery,
 } from "@chakra-ui/react";
 import {
   ChevronLeftIcon,
@@ -15,7 +16,6 @@ import {
   ChevronDownIcon,
 } from "@chakra-ui/icons";
 import { FaPlus, FaMinus } from "react-icons/fa";
-
 
 const LocationOption = ({ name, description, onSelect }) => (
   <Flex
@@ -25,17 +25,17 @@ const LocationOption = ({ name, description, onSelect }) => (
     borderRadius="md"
     onClick={() => onSelect(name)}
   >
-    <Box className="rounded-full bg-gray-300 p-2 mr-2">
+    <Box borderRadius="2xl" bg="#DDD6CE" p={2} mr={2}>
       <svg
-        width="16"
-        height="16"
+        width="20"
+        height="20"
         viewBox="0 0 24 24"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
       >
         <path
           d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"
-          fill="white"
+          fill="black"
         />
       </svg>
     </Box>
@@ -275,6 +275,7 @@ const DatePicker = ({ selectedDates, onDateChange }) => {
           aria-label="Previous month"
           color="white"
           _hover={{ bg: "rgba(255, 255, 255, 0.1)" }}
+          zIndex={999}
         />
         <Flex justifyContent="space-between" width="100%">
           <Text
@@ -435,7 +436,7 @@ const GuestPicker = ({
         </Flex>
       </Flex>
 
-      <Text fontSize="xs" color="#444444" mt={2}>
+      <Text fontSize="2xs" color="#f5f5f5" mt={2}>
         You can search for up to 16 travelers
       </Text>
     </Box>
@@ -451,6 +452,7 @@ const Bookingbar = () => {
   const [adults, setAdults] = useState(2);
   const [children, setChildren] = useState(1);
   const [rooms, setRooms] = useState(1);
+  const [isMobile] = useMediaQuery("(max-width: 768px)");
 
   const location = useDisclosure();
   const datePicker = useDisclosure();
@@ -482,10 +484,10 @@ const Bookingbar = () => {
   };
 
   const locations = [
-    { name: "Cairo, Egypt", description: "All Egypt" },
-    { name: "Hurghada, Egypt", description: "All Egypt" },
-    { name: "Sharm El Sheikh, Egypt", description: "All Egypt" },
-    { name: "Luxor & Aswan, Egypt", description: "All Egypt" },
+    { name: "Cairo, Egypt", description: "City in Egypt" },
+    { name: "Hurghada, Egypt", description: "City in Egypt" },
+    { name: "Sharm El Sheikh, Egypt", description: "City in Egypt" },
+    { name: "Luxor & Aswan, Egypt", description: "City in Egypt" },
   ];
 
   const handleLocationSelect = (location) => {
@@ -498,111 +500,115 @@ const Bookingbar = () => {
       <Box maxWidth="1120px" mx="auto">
         <Box
           bg="rgba(68, 68, 68, 0.3)"
-          p={4}
-          borderRadius="full"
+          p={isMobile ? 3 : 4}
+          borderRadius={isMobile ? "lg" : "full"}
           mb={6}
           maxwidth="1120px"
-          position={"relative"}
+          position="relative"
         >
-          <Flex alignItems="center" justifyContent="space-between">
+          <Flex
+            alignItems="center"
+            justifyContent="space-between"
+            direction={isMobile ? "column" : "row"}
+            gap={isMobile ? 3 : 0}
+          >
+            {/* Location Selector */}
             <Flex
               alignItems="center"
               cursor="pointer"
               onClick={handleLocationClick}
               position="relative"
+              width={isMobile ? "100%" : "auto"}
             >
               <Box className="rounded-full" p={2} mr={2} bg="#D2AC71">
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
                   <path
                     d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"
                     fill="white"
                   />
                 </svg>
               </Box>
-              <Text color="white">{selectedLocation}</Text>
+              <Text color="white" fontSize={isMobile ? "sm" : "md"}>
+                {selectedLocation}
+              </Text>
             </Flex>
 
-            <Box height="32px" width="1px" bg="#444444" ml={7} />
+            {!isMobile && (
+              <Box height="32px" width="1px" bg="#444444" ml={7} mr={3} />
+            )}
 
+            {/* Date Picker */}
             <Flex
               alignItems="center"
               cursor="pointer"
               onClick={handleDatePickerClick}
+              width={isMobile ? "100%" : "auto"}
             >
               <Box className="rounded-full" p={2} mr={2} bg="#D2AC71">
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
                   <path
                     d="M9 11H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2zm2-7h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11z"
                     fill="white"
                   />
                 </svg>
               </Box>
-              <Text color="white">
+              <Text color="white" fontSize={isMobile ? "sm" : "md"}>
                 {formatDate(selectedDates.start)} -{" "}
                 {formatDate(selectedDates.end)}
               </Text>
             </Flex>
 
-            <Box height="32px" width="1px" bg="#444444" ml={7} />
+            {!isMobile && (
+              <Box height="32px" width="1px" bg="#444444" ml={7} mr={3} />
+            )}
 
+            {/* Guest Picker */}
             <Flex
               alignItems="center"
               cursor="pointer"
               onClick={handleGuestPickerClick}
+              width={isMobile ? "100%" : "auto"}
             >
               <Box className="rounded-full" p={2} mr={2} bg="#D2AC71">
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
                   <path
                     d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"
                     fill="white"
                   />
                 </svg>
               </Box>
-              <Text color="white">
-                {adults} Adults, {children} Child, {rooms} Room
+              <Text color="white" fontSize={isMobile ? "sm" : "md"}>
+                {isMobile
+                  ? `${adults} Adults ${children} Children ${rooms} Rooms`
+                  : `${adults} Adults, ${children} Child, ${rooms} Room`}
               </Text>
             </Flex>
 
             <Button
               bg="#346D52"
               color="white"
-              size="md"
+              size={isMobile ? "sm" : "md"}
               _hover={{ bg: "#2a5942" }}
-              ml={7}
-              rounded={"full"}
+              ml={isMobile ? 0 : 7}
+              mt={isMobile ? 2 : 0}
+              width={isMobile ? "100%" : "auto"}
+              rounded={isMobile ? "lg" : "full"}
             >
               Explore Stays
             </Button>
           </Flex>
         </Box>
 
+        {/* Dropdown Menus */}
         <Stack spacing={4} align="flex-start">
           {location.isOpen && (
             <Box
               position="absolute"
-              left="0"
-              ml="20px"
-              width="300px"
+              left={isMobile ? "0" : "0"}
+              ml={isMobile ? "0" : "20px"}
+              width={isMobile ? "100%" : "300px"}
               bg="#444444"
-              borderRadius="xl"
+              borderRadius={isMobile ? "none" : "xl"}
               zIndex="10"
               boxShadow="xl"
             >
@@ -624,28 +630,28 @@ const Bookingbar = () => {
           {datePicker.isOpen && (
             <Box
               position="absolute"
-              left="55%"
-              transform="translateX(-50%)"
-              width="800px"
+              left={isMobile ? "0" : "55%"}
+              transform={isMobile ? "none" : "translateX(-50%)"}
+              width={isMobile ? "100%" : "800px"}
               bg="#444444"
-              borderRadius="xl"
-              zIndex="10"
+              borderRadius={isMobile ? "none" : "xl"}
               boxShadow="xl"
             >
               <DatePicker
                 selectedDates={selectedDates}
                 onDateChange={setSelectedDates}
+                isMobile={isMobile}
               />
             </Box>
           )}
           {guestPicker.isOpen && (
             <Box
               position="absolute"
-              left={"50%"}
-              mr="20px"
-              width="300px"
+              left={isMobile ? "0" : "50%"}
+              mr={isMobile ? "0" : "20px"}
+              width={isMobile ? "100%" : "300px"}
               bg="#444444"
-              borderRadius="xl"
+              borderRadius={isMobile ? "none" : "xl"}
               zIndex="10"
               boxShadow="xl"
             >
