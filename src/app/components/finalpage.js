@@ -661,7 +661,6 @@ const Finalpage = () => {
               ))}
             </HStack>
 
-            {/* Copyright Text */}
             <Text
               textAlign={{ base: "center", md: "right" }}
               w={{ base: "full", md: "auto" }}

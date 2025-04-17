@@ -29,27 +29,19 @@ const SmallNavbar = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  // Handle login action
   const handleLogin = () => {
     setIsLoggedIn(true);
     onClose();
   };
 
-  // Handle logout action
   const handleLogout = () => {
     setIsLoggedIn(false);
     onClose();
   };
 
-  // Handle signup action
-  const handleSignUp = () => {
-    setIsLoggedIn(true);
-    onClose();
-  };
 
   return (
     <Box bg="#111111" w="100%">
-      {/* Idle State - Main Navbar */}
       <Flex h="60px" align="center" justify="space-between" px={4}>
         <Button variant="link">
           <Text
@@ -73,7 +65,6 @@ const SmallNavbar = () => {
         />
       </Flex>
 
-      {/* Active State Drawer */}
       <Drawer isOpen={isOpen} placement="right" onClose={onClose} size="full">
         <DrawerOverlay />
         <DrawerContent bg="#111111" color="white">
@@ -96,7 +87,6 @@ const SmallNavbar = () => {
 
           <DrawerBody p={4}>
             {isLoggedIn ? (
-              // Logged In Navigation Options
               <VStack align="stretch" spacing={4}>
                 <HStack>
                   <Icon as={FiHeart} color="#EDB744" />
@@ -122,7 +112,6 @@ const SmallNavbar = () => {
                 </Text>
               </VStack>
             ) : (
-              // Not Logged In Navigation Options
               <VStack align="stretch" spacing={4}>
                 <HStack>
                   <Icon as={FiGlobe} color="#EDB744" />
@@ -142,14 +131,13 @@ const SmallNavbar = () => {
                   justifyContent="flex-start"
                   color="white"
                   pl={0}
-                  onClick={handleSignUp}
+                  onClick={handleLogin}
                 >
                   Sign up
                 </Button>
               </VStack>
             )}
 
-            {/* Logo at bottom */}
             <Flex
               justify="center"
               position="absolute"

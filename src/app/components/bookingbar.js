@@ -180,7 +180,6 @@ const DatePicker = ({ selectedDates, onDateChange }) => {
     },
   ]);
 
-  // Update displayed months when current date changes
   useEffect(() => {
     setDisplayMonths([
       { month: currentDate.month, year: currentDate.year },

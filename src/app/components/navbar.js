@@ -439,6 +439,7 @@ const Navbar = () => {
               borderRadius="full"
               _hover={{ bg: "#c19a60" }}
               size={{ base: "sm", md: "md" }}
+              onClick={() => setIsLoggedIn(true)}
             >
               Sign Up
             </Button>
